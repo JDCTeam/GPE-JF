@@ -143,10 +143,7 @@ buildKernel() {
 	make mrproper
 	./build_kernel.sh
 
-	if [ -e "$KERNEL"/arch/arm/boot/zImage ];then
-		rm -rf "$OVERLAY_SYSTEM"/lib/modules/*
-		cp -r "$KERNEL_DIST"/modules "$OVERLAY_SYSTEM"/lib/modules
-	else
+	if [ ! -e "$KERNEL"/arch/arm/boot/zImage ];then
 		echo "Kernel failed to build"
 		exit 0
 	fi
