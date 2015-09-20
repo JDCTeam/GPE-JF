@@ -1,6 +1,6 @@
 # JFLTE-GPE
 
-Visit [GitHub](https://github.com/TeamJDC/GPE-JF) for full source
+Visit [GitHub](https://github.com/JDCTeam/GPE-JF) for full source
 
 Visit [UltimaROM](http://ultimarom.com) for downloads
 
