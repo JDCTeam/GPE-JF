@@ -18,9 +18,9 @@ sudo apt-get install -y build-essential kernel-package libncurses5-dev bzip2 ope
 
 ```bash
 	cd ~/android/JFLTE-GPE
-	git clone -b GED-5.0 --single-branch https://github.com/MatthewBooth/JFLTE-GPE ROM
-	git clone -b GED-5.0 --single-branch https://github.com/MatthewBooth/JFLTE-GPE-Kernel Kernel
-	git clone -b GED-5.0 --single-branch https://github.com/MatthewBooth/JFLTE-GPE-Ramdisk Ramdisk
+	git clone -b GED-5.1 --single-branch https://github.com/JDCTeam/GPE-JF ROM
+	git clone -b GED-5.1 --single-branch https://github.com/JDCTeam/android_kernel_gpe_jf Kernel
+	git clone -b GED-5.1 --single-branch https://github.com/JDCTeam/GPE-JF-Ramdisk Ramdisk
 	git clone -b master https://github.com/Christopher83/arm-cortex_a15-linux-gnueabihf-linaro_4.9 Christopher83_Linaro_4.9.3
 ```
 
