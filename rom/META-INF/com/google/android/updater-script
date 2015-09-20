@@ -43,7 +43,7 @@ assert(getprop("ro.product.device") == "jflte" || getprop("ro.build.product") ==
 	delete_recursive("/data/dalvik-cache"); 
 	delete_recursive("/cache"); 
 
-	show_progress(1.0, 1978);
+	show_progress(1.0, 1773);
 
 
 #### Install System
@@ -53,13 +53,6 @@ assert(getprop("ro.product.device") == "jflte" || getprop("ro.build.product") ==
 
 	# DivX DRM file fix for some videos
 	package_extract_file("system/lib/libDivxDrm.so", "/system/lib/libdivxdrm.so");
-
-# Clear OTA app data for those that anger developers and dirty flash >.<
-
-	delete_recursive("/data/data/com.ultima.settings");
-
-	ui_print("<b><#80cbc4>Installing Data...</#></b>");
-	package_extract_dir("data", "/data");
 
 #### Symlinking, permissions and Busybox
 
@@ -433,6 +426,13 @@ ui_print("<b><#80cbc4>Setting Permissions...</#></b>");
 
 ui_print("<b><#80cbc4>Installing BusyBox...</#></b>");
 	run_program("/system/xbin/busybox", "--install", "-s", "/system/xbin");
+
+### Install OpenGapps
+
+ui_print("<b><#80cbc4>Installing OpenGapps...</#></b>");
+    package_extract_dir("install/opengapps", "/tmp/opengapps");
+	run_program("/sbin/busybox", "unzip", "/tmp/opengapps/opengapps.zip", "META-INF/com/google/android/*", "-d", "/tmp/opengapps");
+	run_program("/sbin/busybox", "sh", "/tmp/opengapps/META-INF/com/google/android/update-binary", "dummy", "1", "/tmp/opengapps/opengapps.zip");
 
 ## Kernel
 

@@ -2,23 +2,9 @@ GPE-JF-*.zip
 GPE-JF-*.zip.md5
 temp/*
 .fuse_*
+rom/install/opengapps/opengapps.zip
 
 *.zip.tmp
-system/framework/android.policy.jar
-system/framework/services.jar
-system/framework/framework-res.apk
-system/framework/framework.jar
-system/framework/telephony-common.jar
-
-system/priv-app/SystemUI/*
-system/priv-app/Telecom/*
-system/priv-app/TeleService/*
-
-addons/contacts_dialer/invertedstock/GoogleDialer/GoogleDialer.apk
-addons/contacts_dialer/invertedstock/GoogleContacts/GoogleContacts.apk
-
-addons/contacts_dialer/invertedteal/GoogleDialer/GoogleDialer.apk
-addons/contacts_dialer/invertedteal/GoogleContacts/GoogleContacts.apk
 
 addons/*.zip
 

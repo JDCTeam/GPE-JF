@@ -12,10 +12,12 @@ BUILD_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 VERSION=$(date +%Y%m%d)
 TIMESTAMP=$(date)
 UTC=$(date +%s)
+API_NUM=5.1
+BRANCH=GED-"$API_NUM"
 
 # TOOLS
 ROM_DIR="$BUILD_DIR"/rom
-ROMNAME=GPE-JF-5.1
+ROMNAME=GPE-JF-"$API_NUM"
 FILE="$ROMNAME"-${VERSION}.zip
 DIST="$BUILD_DIR"/dist/"$VERSION"
 TOOLS="$BUILD_DIR"/tools
@@ -149,16 +151,46 @@ buildKernel() {
 	fi
 }
 
-start() {
+buildGapps() {
+	OPENGAPPS_ARCH=arm
+	OPENGAPPS_VARIANT=stock
+	OPENGAPPS_API=22
+	OPENGAPPS_ZIP=open_gapps-"$OPENGAPPS_ARCH"-"$API_NUM"-"$OPENGAPPS_VARIANT"-"$VERSION".zip
+	OPENGAPPS_INSTALL="$BUILD_DIR"/rom/install/opengapps
+	OPENGAPPS_OUT="$BUILD_DIR"/opengapps/out
 
+	if [ ! -e "$OPENGAPPS_OUT"/"$OPENGAPPS_ZIP" ];then
+		./"$BUILD_DIR"/opengapps/download_sources.sh
+		make "$OPENGAPPS_ARCH"-"$OPEN_GAPPS_API"-"$OPENGAPPS_VARIANT"
+	fi
+
+	if [ ! -e "$OPEN_GAPPS_INSTALL" ];then
+		mkdir -p "$OPENGAPPS_INSTALL"
+	fi
+	
+	echo "Copying Gapps to Install folder"
+	cp "$OPENGAPPS_OUT"/"$OPENGAPPS_ZIP" "$OPENGAPPS_INSTALL"/opengapps.zip
+}
+
+checkForUpdates() {
+	echo "Checking for updates"
+	git pull origin "$BRANCH"
+	git pull --recurse-submodules
+	git submodule update --recursive
+}
+
+start() {
+	
 	echo "Select to either BUILD the ROM, or just the modified apps/jars"
-	select CHOICE in "Build ROM, Kernel and Files" "Build ROM" "Build Kernel" "Build Modded Files" "Build Addons" "Exit"; do
+	select CHOICE in "Build ROM, GApps, Kernel and Files" "Build ROM" "Build Kernel" "Build Modded Files" "Build Addons" "Build GApps" "Check for Updates" "Exit"; do
 	    case "$CHOICE" in
-	        "Build ROM, Kernel and Files" ) buildKernel; buildApps; buildROM; start; break;;
+	        "Build ROM, GApps, Kernel and Files" ) buildKernel; buildApps; buildGapps; buildROM; start; break;;
 	        "Build ROM" ) buildROM; start; break;;
 			"Build Kernel" ) buildKernel; start; break;;
 			"Build Modded Files" ) buildApps; start; break;;
 			"Build Addons" ) buildAddons; start; break;;
+			"Build GApps" ) buildGapps; start; break;;
+			"Check for Updates" ) checkForUpdates; start; break;;
 			"Exit" ) exit 0; break;;
 	    esac
 	done
