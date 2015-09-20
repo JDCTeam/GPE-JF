@@ -43,6 +43,11 @@ echo "$BUILD_DIR"
 
 buildROM() {
 
+	if [ ! -e "$KERNEL_DIST"/boot.img ];then
+		echo "Kernel not built, you cannot continue with the build"
+		exit 255
+	fi
+
 	if [ ! -e "$DIST" ];then
 		mkdir -p "$DIST"
 		mkdir -p "$DIST"/addons
@@ -139,7 +144,6 @@ buildKernel() {
 	./build_kernel.sh
 
 	if [ -e "$KERNEL"/arch/arm/boot/zImage ];then
-		cp "$KERNEL_DIST"/boot.img "$ROM_DIR"/boot.img
 		rm -rf "$OVERLAY_SYSTEM"/lib/modules/*
 		cp -r "$KERNEL_DIST"/modules "$OVERLAY_SYSTEM"/lib/modules
 	else
