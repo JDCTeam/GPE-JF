@@ -160,8 +160,10 @@ buildGapps() {
 	OPENGAPPS_OUT="$BUILD_DIR"/opengapps/out
 
 	if [ ! -e "$OPENGAPPS_OUT"/"$OPENGAPPS_ZIP" ];then
-		./"$BUILD_DIR"/opengapps/download_sources.sh
-		make "$OPENGAPPS_ARCH"-"$OPEN_GAPPS_API"-"$OPENGAPPS_VARIANT"
+		cd opengapps		
+	 	./download_sources.sh
+		make "$OPENGAPPS_ARCH"-"$OPENGAPPS_API"-"$OPENGAPPS_VARIANT"
+		cd ..
 	fi
 
 	if [ ! -e "$OPEN_GAPPS_INSTALL" ];then

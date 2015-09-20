@@ -8,8 +8,8 @@ ro.build.version.sdk=22
 ro.build.version.codename=REL
 ro.build.version.all_codenames=REL
 ro.build.version.release=5.1
-ro.build.date=Sun Sep 20 17:57:46 BST 2015
-ro.build.date.utc=1442768266
+ro.build.date=Sun Sep 20 19:37:22 BST 2015
+ro.build.date.utc=1442774242
 ro.build.type=user
 ro.build.user=dpi
 ro.build.host=SWHE2311
@@ -257,6 +257,6 @@ net.tethering.noprovisioning=true
 
 # OTA Updates
 ro.ota.romname=GPE-JF
-ro.ota.version=201500920
+ro.ota.version=20150920
 ro.ota.manifest=https://romhut.com/roms/gpe-jf/ota.xml
 ro.ota.default_theme=0

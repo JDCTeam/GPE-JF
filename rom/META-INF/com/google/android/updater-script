@@ -28,7 +28,7 @@ assert(getprop("ro.product.device") == "jflte" || getprop("ro.build.product") ==
 
 #### Mounting
 	
-	ui_print("<b><#80cbc4>Mounting and Formatting Devices...</#></b>");
+	ui_print("Mounting and Formatting Devices...");
 
 	run_program("/sbin/mount", "-t", "auto", "/system");
 	run_program("/sbin/mount", "-t", "auto", "/cache");
@@ -48,7 +48,7 @@ assert(getprop("ro.product.device") == "jflte" || getprop("ro.build.product") ==
 
 #### Install System
 	
-	ui_print("<b><#80cbc4>Installing System...</#></b>");
+	ui_print("Installing System...");
 	package_extract_dir("system", "/system");
 
 	# DivX DRM file fix for some videos
@@ -56,7 +56,7 @@ assert(getprop("ro.product.device") == "jflte" || getprop("ro.build.product") ==
 
 #### Symlinking, permissions and Busybox
 
-ui_print("<b><#80cbc4>Symlinking...</#></b>");
+ui_print("Symlinking...");
 	symlink("app_process32", "/system/bin/app_process");
 	symlink("dalvikvm32", "/system/bin/dalvikvm");
 	symlink("/data/misc/audio/mbhc.bin", "/system/etc/firmware/wcd9310/wcd9310_mbhc.bin");
@@ -344,7 +344,7 @@ ui_print("<b><#80cbc4>Symlinking...</#></b>");
 	symlink("toolbox", "/system/bin/watchprops");
 	symlink("toolbox", "/system/bin/wipe");
 
-ui_print("<b><#80cbc4>Setting Permissions...</#></b>");
+ui_print("Setting Permissions...");
 	set_metadata_recursive("/system", "uid", 0, "gid", 0, "dmode", 0755, "fmode", 0644, "capabilities", 0x0, "selabel", "u:object_r:system_file:s0");
 	set_metadata_recursive("/system/bin", "uid", 0, "gid", 2000, "dmode", 0755, "fmode", 0755, "capabilities", 0x0, "selabel", "u:object_r:system_file:s0");
 	set_metadata("/system/bin/ATFWD-daemon", "uid", 0, "gid", 2000, "mode", 0755, "capabilities", 0x0, "selabel", "u:object_r:ATFWD-daemon_exec:s0");
@@ -424,19 +424,19 @@ ui_print("<b><#80cbc4>Setting Permissions...</#></b>");
 	set_metadata_recursive("/system/etc/init.d", "uid", 0, "gid", 2000, "dmode", 0755, "fmode", 0755, "capabilities", 0x0, "selabel", "u:object_r:system_file:s0");
 	set_metadata("/system/etc/init.d", "uid", 0, "gid", 0, "mode", 0755, "capabilities", 0x0, "selabel", "u:object_r:system_file:s0");
 
-ui_print("<b><#80cbc4>Installing BusyBox...</#></b>");
+ui_print("Installing BusyBox...");
 	run_program("/system/xbin/busybox", "--install", "-s", "/system/xbin");
 
 ### Install OpenGapps
 
-ui_print("<b><#80cbc4>Installing OpenGapps...</#></b>");
+ui_print("Installing OpenGapps...");
     package_extract_dir("install/opengapps", "/tmp/opengapps");
 	run_program("/sbin/busybox", "unzip", "/tmp/opengapps/opengapps.zip", "META-INF/com/google/android/*", "-d", "/tmp/opengapps");
 	run_program("/sbin/busybox", "sh", "/tmp/opengapps/META-INF/com/google/android/update-binary", "dummy", "1", "/tmp/opengapps/opengapps.zip");
 
 ## Kernel
 
-ui_print("<b><#80cbc4>Installing JFLTE-GPE Kernel...</#></b>");	
+ui_print("Installing JFLTE-GPE Kernel...");	
 	if (getprop("ro.product.device") == "jflteatt" || getprop("ro.build.product") == "jflteatt" || 
 		getprop("ro.product.device") == "jfltevzw" || getprop("ro.build.product") == "jfltevzw") then
 		package_extract_dir("install/loki", "/tmp");
@@ -453,7 +453,7 @@ ui_print("<b><#80cbc4>Installing JFLTE-GPE Kernel...</#></b>");
 
 ## Finishing
 
-ui_print("<b><#80cbc4>Finishing Installation...</#></b>");
+ui_print("Finishing Installation...");
       
 	if (getprop("ro.product.device") == "jfltevzw" || getprop("ro.build.product") == "jfltevzw") then
 		package_extract_dir("install/CSCvzw", "/system");  
@@ -469,24 +469,24 @@ ui_print("<b><#80cbc4>Finishing Installation...</#></b>");
 
 #### Rooting
 
-ui_print("<b><#80cbc4>Installing SuperSU...</#></b>");
+ui_print("Installing SuperSU...");
     package_extract_dir("install/supersu", "/tmp/supersu");
 	run_program("/sbin/busybox", "unzip", "/tmp/supersu/supersu.zip", "META-INF/com/google/android/*", "-d", "/tmp/supersu");
 	run_program("/sbin/busybox", "sh", "/tmp/supersu/META-INF/com/google/android/update-binary", "dummy", "1", "/tmp/supersu/supersu.zip");
 	
-ui_print("<b><#80cbc4>ROM Installed!</#></b>");
+ui_print("ROM Installed!");
 ui_print(" ");	
 
-ui_print("<b><#80cbc4>Unmounting Everything...</#></b>");
+ui_print("Unmounting Everything...");
 # SuperSU script unmounts these
 #unmount("/system");
 #unmount("/data");
 unmount("/cache");
 ui_print(" ");
 ui_print(" ");
-ui_print("<b><#80cbc4>Install Complete");
+ui_print("Install Complete");
 ui_print(" ");
 ui_print("Please be aware the first boot may take some time.");
 ui_print(" ");
-ui_print("<#F44336>Reboot now</#></b>");
+ui_print("<#F44336>Reboot now");
 #### We're done
