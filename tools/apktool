@@ -20,7 +20,6 @@
 
 # Set up prog to be the path of this script, including following symlinks,
 # and set up progdir to be the fully-qualified pathname of its directory.
-javabin=/usr/lib/jvm/java-7-openjdk-amd64/bin/java
 prog="$0"
 while [ -h "${prog}" ]; do
     newProg=`/bin/ls -ld "${prog}"`
@@ -78,4 +77,4 @@ fi
 # add current location to path for aapt
 PATH=$PATH:`pwd`;
 export PATH;
-exec $javabin $javaOpts -jar "$jarpath" "$@"
+exec java $javaOpts -jar "$jarpath" "$@"

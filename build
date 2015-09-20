@@ -8,68 +8,96 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 BUILD_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
+# BUILD
 VERSION=$(date +%Y%m%d)
 TIMESTAMP=$(date)
 UTC=$(date +%s)
 
-ROMNAME=JFLTE-GPE
+# TOOLS
+ROM_DIR="$BUILD_DIR"/rom
+ROMNAME=GPE-JF-5.1
 FILE="$ROMNAME"-${VERSION}.zip
-OUT="$BUILD_DIR"/../out/"$VERSION"
-
+DIST="$BUILD_DIR"/dist/"$VERSION"
 TOOLS="$BUILD_DIR"/tools
 APKTOOL="$TOOLS"/apktool
-SYSTEM="$BUILD_DIR"/system
-FRAMEWORK="$SYSTEM"/framework
-OVERLAY="$BUILD_DIR"/overlay/system
 
-KERNEL="$BUILD_DIR"/../Kernel
+# ROM
+SYSTEM_DIR="$ROM_DIR"/system
+FRAMEWORK_DIR="$SYSTEM_DIR"/framework
+OVERLAY_DIR="$ROM_DIR"/overlay
+OVERLAY_SYSTEM="$ROM_DIR"/overlay/system/system
+OVERLAY_GAPPS="$ROM_DIR"/overlay/gapps
+
+# KERNEL
+KERNEL="$BUILD_DIR"/kernel
 KERNEL_DIST="$KERNEL"/dist
+
+# MODS
+MODS_DIR="$BUILD_DIR"/mods
+
+# ADDONS
+ADDONS_DIR="$BUILD_DIR"/addons
+
+
+echo "$BUILD_DIR"
 
 buildROM() {
 
-	if [ ! -e "$OUT" ];then
-		mkdir "$OUT"
+	if [ ! -e "$DIST" ];then
+		mkdir -p "$DIST"
+		mkdir -p "$DIST"/addons
 	fi
 
-	rm -rf "$OUT"/"$ROMNAME"-*.zip
+	rm -rf "$DIST"/"$ROMNAME"-*.zip
 
-	cp "$BUILD_DIR"/Changelog.md "$OVERLAY"/etc/CHANGELOG.txt
+	cp "$BUILD_DIR"/Changelog.md "$OVERLAY_SYSTEM"/etc/CHANGELOG.txt
 
-	sed -i "s/.*ro.build.version.incremental.*/ro.build.version.incremental=$VERSION/g" "$OVERLAY"/build.prop
-	sed -i "s/.*ro.ota.version.*/ro.ota.version=$VERSION/g" "$OVERLAY"/build.prop
-	sed -i "s/.*ro.build.date=.*/ro.build.date=$TIMESTAMP/g" "$OVERLAY"/build.prop
-	sed -i "s/.*ro.build.date.utc.*/ro.build.date.utc=$UTC/g" "$OVERLAY"/build.prop
+	ROM_SYSTEM_COUNT=$(find "$SYSTEM_DIR" -type f | wc -l)
+	ROM_OVERLAY_COUNT=$(find "$OVERLAY_DIR" -type f | wc -l)
 
-	7za a -mx9 -xr@"$TOOLS"/exclusion.txt "$OUT"/"$FILE" "$BUILD_DIR"/META-INF "$BUILD_DIR"/install "$SYSTEM" "$BUILD_DIR"/boot.img
+	FILE_COUNT=$(expr "$ROM_SYSTEM_COUNT" + "$ROM_OVERLAY_COUNT")
 
-	7za u -mx9 -up1q1r2x2y2z1w2 -xr@"$TOOLS"/exclusion.txt "$OUT"/"$FILE" "$OVERLAY"
+	sed -i "s/.*show_progress.*/	show_progress(1.0, $FILE_COUNT);/g" "$ROM_DIR"/META-INF/com/google/android/updater-script
 
-	md5sum "$OUT"/"$FILE" > "$OUT"/"$FILE".md5
+	sed -i "s/.*ro.build.version.incremental.*/ro.build.version.incremental=$VERSION/g" "$OVERLAY_SYSTEM"/build.prop
+	sed -i "s/.*ro.ota.version.*/ro.ota.version=$VERSION/g" "$OVERLAY_SYSTEM"/build.prop
+	sed -i "s/.*ro.build.date=.*/ro.build.date=$TIMESTAMP/g" "$OVERLAY_SYSTEM"/build.prop
+	sed -i "s/.*ro.build.date.utc.*/ro.build.date.utc=$UTC/g" "$OVERLAY_SYSTEM"/build.prop
+
+	7za a -mx9 -xr@"$TOOLS"/exclusion.txt "$DIST"/"$FILE" "$ROM_DIR"/META-INF "$ROM_DIR"/install "$SYSTEM_DIR" "$KERNEL_DIST"/boot.img "$KERNEL_DIST"/system
+
+	if [ -e "$OVERLAY_DIR" ];then
+		for d in "$OVERLAY_DIR"/* ;do
+			7za u -mx9 -up1q1r2x2y2z1w2 -xr@"$TOOLS"/exclusion.txt "$DIST"/"$FILE" "$d"/*
+		done
+	fi
+
+	md5sum "$DIST"/"$FILE" > "$DIST"/"$FILE".md5
 }
 
 buildApps() {
-	cd "$BUILD_DIR"/mods
+	cd "$MODS_DIR"
 
 	if [ -d framework ]; then
 		cd framework
 		for f in * ; do
 			"$APKTOOL" b -c "$f"
-			cp "$f"/dist/"$f" "$FRAMEWORK"/"$f"
+			cp "$f"/dist/"$f" "$FRAMEWORK_DIR"/"$f"
 			rm -rf "$f"/dist "$f"/build
 		done
 		cd ..
 	fi
 
-	"$APKTOOL" if "$FRAMEWORK"/framework-res.apk
+	"$APKTOOL" if "$FRAMEWORK_DIR"/framework-res.apk
 
 	if [ -d app ]; then
 		cd app
 		for f in * ; do
 			"$APKTOOL" b -c "$f"
-			if [ ! -d "$SYSTEM"/app/"${f%%.*}" ]; then
-				mkdir -p "$SYSTEM"/app/"${f%%.*}"
+			if [ ! -d "$SYSTEM_DIR"/app/"${f%%.*}" ]; then
+				mkdir -p "$SYSTEM_DIR"/app/"${f%%.*}"
 			fi
-			cp "$f"/dist/"$f" "$SYSTEM"/app/"${f%%.*}"/"$f"
+			cp "$f"/dist/"$f" "$SYSTEM_DIR"/app/"${f%%.*}"/"$f"
 			rm -rf "$f"/dist "$f"/build
 		done
 		cd ..
@@ -79,37 +107,27 @@ buildApps() {
 		cd priv-app
 		for f in * ; do
 			"$APKTOOL" b -c "$f"
-			if [ ! -d "$SYSTEM"/priv-app/"${f%%.*}" ]; then
-				mkdir -p "$SYSTEM"/priv-app/"${f%%.*}"
+			if [ ! -d "$SYSTEM_DIR"/priv-app/"${f%%.*}" ]; then
+				mkdir -p "$SYSTEM_DIR"/priv-app/"${f%%.*}"
 			fi
-			cp "$f"/dist/"$f" "$SYSTEM"/priv-app/"${f%%.*}"/"$f"
+			cp "$f"/dist/"$f" "$SYSTEM_DIR"/priv-app/"${f%%.*}"/"$f"
 			rm -rf "$f"/dist "$f"/build
 		done
 		cd ..
 	fi
-
-	if [ -d addons ]; then
-		cd addons
-		for f in * ; do
-			"$APKTOOL" b -c "$f"
-			INSTALL_LOC=$(cat "$f"/install_loc)
-			DEST=../../"$INSTALL_LOC"
-			cp "$f"/dist/"$f" "$DEST"
-			rm -rf "$f"/dist "$f"/build
-		done
-		cd ..
-	fi
-
-	cd ..
 }
 
 buildAddons() {
-	cd addons
+	cd "$ADDONS_DIR"
 	for d in */ ; do
-		cd "$d"
-		NAME=$(cat zipname.txt)
-		7za a -r -mx9 -xr@"$TOOLS"/exclusion.txt ../"$ROMNAME"_$NAME.zip *
-		cd ..
+		if [ -e "$d" ];then
+			cd "$d"
+			NAME=$(cat zipname.txt)
+			7za a -r -mx9 -xr@"$TOOLS"/exclusion.txt "$DIST"/addons/"$ROMNAME"_$NAME.zip *
+			cd ..
+		else
+			echo "No Addons to zip"
+		fi
 	done
 	cd ..
 }
@@ -121,9 +139,9 @@ buildKernel() {
 	./build_kernel.sh
 
 	if [ -e "$KERNEL"/arch/arm/boot/zImage ];then
-		cp "$KERNEL_DIST"/boot.img "$BUILD_DIR"/boot.img
-		rm -rf "$OVERLAY"/lib/modules/*
-		cp -r "$KERNEL_DIST"/modules "$OVERLAY"/lib/modules
+		cp "$KERNEL_DIST"/boot.img "$ROM_DIR"/boot.img
+		rm -rf "$OVERLAY_SYSTEM"/lib/modules/*
+		cp -r "$KERNEL_DIST"/modules "$OVERLAY_SYSTEM"/lib/modules
 	else
 		echo "Kernel failed to build"
 		exit 0

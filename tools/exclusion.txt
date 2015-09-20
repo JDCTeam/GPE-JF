@@ -1,3 +1,4 @@
 .fuse_*
 .placeholder
 zipname.txt
+.gitkeep

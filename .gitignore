@@ -1,5 +1,5 @@
-JFLTE-GPE-*.zip
-JFLTE-GPE-*.zip.md5
+GPE-JF-*.zip
+GPE-JF-*.zip.md5
 temp/*
 .fuse_*
 
@@ -25,7 +25,6 @@ addons/*.zip
 build/
 dist/
 tmp/
-out/
 
 tools/bin/.JavaPATH
 *.JavaPATH
