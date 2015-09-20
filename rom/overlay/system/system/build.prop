@@ -254,3 +254,9 @@ persist.loc.nlp_name=com.qualcomm.location
 ro.gps.agps_provider=1
 ro.pip.gated=0
 net.tethering.noprovisioning=true
+
+# OTA Updates
+ro.ota.romname=GPE-JF
+ro.ota.version=201500920
+ro.ota.manifest=https://romhut.com/roms/gpe-jf/ota.xml
+ro.ota.default_theme=0
