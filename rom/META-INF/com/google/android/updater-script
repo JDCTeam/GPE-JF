@@ -430,6 +430,7 @@ ui_print("Installing BusyBox...");
 ### Install OpenGapps
 
 ui_print("Installing OpenGapps...");
+ui_print("-- This will take some time");
     package_extract_dir("install/opengapps", "/tmp/opengapps");
 	run_program("/sbin/busybox", "unzip", "/tmp/opengapps/opengapps.zip", "META-INF/com/google/android/*", "-d", "/tmp/opengapps");
 	run_program("/sbin/busybox", "sh", "/tmp/opengapps/META-INF/com/google/android/update-binary", "dummy", "1", "/tmp/opengapps/opengapps.zip");
@@ -488,5 +489,5 @@ ui_print("Install Complete");
 ui_print(" ");
 ui_print("Please be aware the first boot may take some time.");
 ui_print(" ");
-ui_print("<#F44336>Reboot now");
+ui_print("Reboot now");
 #### We're done
