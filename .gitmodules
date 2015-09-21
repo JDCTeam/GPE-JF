@@ -10,3 +10,6 @@
 [submodule "opengapps"]
 	path = opengapps
 	url = https://github.com/opengapps/opengapps.git
+[submodule "mods"]
+	path = mods
+	url = https://github.com/JDCTeam/GPE-JF-Mods
