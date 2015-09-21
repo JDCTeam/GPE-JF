@@ -43,7 +43,7 @@ assert(getprop("ro.product.device") == "jflte" || getprop("ro.build.product") ==
 	delete_recursive("/data/dalvik-cache"); 
 	delete_recursive("/cache"); 
 
-	show_progress(1.0, 1773);
+	show_progress(1.0, 1771);
 
 
 #### Install System
