@@ -14,3 +14,7 @@ tmp/
 
 tools/bin/.JavaPATH
 *.JavaPATH
+
+# Mod files
+rom/system/framework/framework-res.apk
+rom/system/priv-app/SystemUI/SystemUI.apk

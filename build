@@ -35,7 +35,7 @@ KERNEL="$BUILD_DIR"/kernel
 KERNEL_DIST="$KERNEL"/dist
 
 # MODS
-MODS_DIR="$BUILD_DIR"/mods
+MODS_DIR="$BUILD_DIR"/mods/modified
 
 # ADDONS
 ADDONS_DIR="$BUILD_DIR"/addons
@@ -95,7 +95,9 @@ buildApps() {
 		cd ..
 	fi
 
-	"$APKTOOL" if "$FRAMEWORK_DIR"/framework-res.apk
+	if [ ! -e "$HOME"/apktool/1.apk ]; then
+		"$APKTOOL" if "$TOOLS"/framework-res.apk
+	fi
 
 	if [ -d app ]; then
 		cd app
