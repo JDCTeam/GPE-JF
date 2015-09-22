@@ -162,7 +162,7 @@ buildGapps() {
 	OPENGAPPS_OUT="$BUILD_DIR"/opengapps/out
 
 	if [ ! -e "$OPENGAPPS_OUT"/"$OPENGAPPS_ZIP" ];then
-		cd opengapps		
+		cd opengapps
 	 	./download_sources.sh
 		make "$OPENGAPPS_ARCH"-"$OPENGAPPS_API"-"$OPENGAPPS_VARIANT"
 		cd ..
@@ -171,20 +171,18 @@ buildGapps() {
 	if [ ! -e "$OPEN_GAPPS_INSTALL" ];then
 		mkdir -p "$OPENGAPPS_INSTALL"
 	fi
-	
+
 	echo "Copying Gapps to Install folder"
 	cp "$OPENGAPPS_OUT"/"$OPENGAPPS_ZIP" "$OPENGAPPS_INSTALL"/opengapps.zip
 }
 
 checkForUpdates() {
 	echo "Checking for updates"
-	git pull origin "$BRANCH"
-	git pull --recurse-submodules
-	git submodule update --recursive
+  git pull origin "$BRANCH" && git submodule init && git submodule update --recursive && git submodule status
 }
 
 start() {
-	
+
 	echo "Select to either BUILD the ROM, or just the modified apps/jars"
 	select CHOICE in "Build ROM, GApps, Kernel and Files" "Build ROM" "Build Kernel" "Build Modded Files" "Build Addons" "Build GApps" "Check for Updates" "Exit"; do
 	    case "$CHOICE" in
