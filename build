@@ -178,7 +178,7 @@ buildGapps() {
 
 checkForUpdates() {
 	echo "Checking for updates"
-  git pull origin "$BRANCH" && git submodule init && git submodule update --recursive && git submodule status
+	git pull && git submodule init && git submodule update && git submodule status
 }
 
 start() {
