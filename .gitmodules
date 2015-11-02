@@ -1,6 +1,6 @@
 [submodule "kernel"]
 	path = kernel
-	url = https://github.com/JDCTeam/android_kernel_gpe_jf
+	url = https://github.com/JDCTeam/GPE-JF-Kernel
 [submodule "ramdisk"]
 	path = ramdisk
 	url = https://github.com/JDCTeam/GPE-JF-Ramdisk
