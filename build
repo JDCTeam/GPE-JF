@@ -147,6 +147,7 @@ buildAddons() {
 
 buildKernel() {
 	cd "$KERNEL"
+	echo "Cleaning Kernel"
 	make clean
 	make mrproper
 	./build_kernel.sh
