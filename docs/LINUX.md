@@ -19,9 +19,6 @@ sudo apt-get install -y build-essential kernel-package libncurses5-dev bzip2 ope
 ```bash
 	cd ~/android/JFLTE-GPE
 	git clone -b GED-5.1 --single-branch https://github.com/JDCTeam/GPE-JF ROM
-	git clone -b GED-5.1 --single-branch https://github.com/JDCTeam/android_kernel_gpe_jf Kernel
-	git clone -b GED-5.1 --single-branch https://github.com/JDCTeam/GPE-JF-Ramdisk Ramdisk
-	git clone -b master https://github.com/Christopher83/arm-cortex_a15-linux-gnueabihf-linaro_4.9 Christopher83_Linaro_4.9.3
 ```
 
 4. Now we can build, by doing the following
@@ -31,4 +28,7 @@ sudo apt-get install -y build-essential kernel-package libncurses5-dev bzip2 ope
 	./build
 ```
 
-You can choose from a range of options, but #1 will build the ROM for you and create a folder here "~/android/JFLTE-GPE/out" where you can find your ROM to flash
+You can choose from a range of options, but #1 will build the ROM for you and create a folder here "~/android/JFLTE-GPE/dist" where you can find your ROM to flash
+However choosing 1 requires a 10GB download and 700MB zip since it includes GAPPS
+To download and install gapps separately, choose #5, then #4, then #3, then #2, and check the dist folder for your zip
+Only Supported GAPPS Package: OpenGAPPS Super
