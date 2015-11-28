@@ -3,6 +3,7 @@ GPE-JF-*.zip.md5
 temp/*
 .fuse_*
 rom/install/opengapps/opengapps.zip
+rom/install/boot.img
 
 *.zip.tmp
 
