@@ -74,7 +74,9 @@ buildROM() {
 	sed -i "s/.*ro.build.date=.*/ro.build.date=$TIMESTAMP/g" "$OVERLAY_SYSTEM"/build.prop
 	sed -i "s/.*ro.build.date.utc.*/ro.build.date.utc=$UTC/g" "$OVERLAY_SYSTEM"/build.prop
 
-	7za a -mx9 -xr@"$TOOLS"/exclusion.txt "$DIST"/"$FILE" "$ROM_DIR"/META-INF "$ROM_DIR"/install "$SYSTEM_DIR" "$KERNEL_DIST"/boot.img "$KERNEL_DIST"/system
+	cp "$KERNEL_DIST"/boot.img rom/install/boot.img
+
+	7za a -mx9 -xr@"$TOOLS"/exclusion.txt "$DIST"/"$FILE" "$ROM_DIR"/META-INF "$ROM_DIR"/install "$SYSTEM_DIR" "$KERNEL_DIST"/system
 
 	if [ -e "$OVERLAY_DIR" ];then
 		for d in "$OVERLAY_DIR"/* ;do
