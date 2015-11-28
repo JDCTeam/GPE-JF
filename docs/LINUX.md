@@ -30,5 +30,7 @@ sudo apt-get install -y build-essential kernel-package libncurses5-dev bzip2 ope
 
 You can choose from a range of options, but #1 will build the ROM for you and create a folder here "~/android/JFLTE-GPE/dist" where you can find your ROM to flash
 However choosing 1 requires a 10GB download and 700MB zip since it includes GAPPS
+
 To download and install gapps separately, choose #5, then #4, then #3, then #2, and check the dist folder for your zip
+
 Only Supported GAPPS Package: OpenGAPPS Super
