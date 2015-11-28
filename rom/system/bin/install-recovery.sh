@@ -1,6 +1,6 @@
 #!/system/bin/sh
-if ! applypatch -c EMMC:/dev/block/platform/msm_sdcc.1/by-name/recovery:9404672:d7876328d9b59e451bca9b9a9b3e648b620823ab; then
-  applypatch EMMC:/dev/block/platform/msm_sdcc.1/by-name/boot:8354048:47822ee92dd61c407d5cbfe1cdfa512df99b7645 EMMC:/dev/block/platform/msm_sdcc.1/by-name/recovery d7876328d9b59e451bca9b9a9b3e648b620823ab 9404672 47822ee92dd61c407d5cbfe1cdfa512df99b7645:/system/recovery-from-boot.p || echo 454 > /cache/fota/fota.status
+if ! applypatch -c EMMC:/dev/block/platform/msm_sdcc.1/by-name/recovery:9402624:a219dbc3160a890116b0661b3fb8f07571a3fd10; then
+  applypatch EMMC:/dev/block/platform/msm_sdcc.1/by-name/boot:8352000:c301c6254a6563dac7039c7e5f76c04e3c42fa85 EMMC:/dev/block/platform/msm_sdcc.1/by-name/recovery a219dbc3160a890116b0661b3fb8f07571a3fd10 9402624 c301c6254a6563dac7039c7e5f76c04e3c42fa85:/system/recovery-from-boot.p || echo 454 > /cache/fota/fota.status
 else
   log -t recovery "Recovery image already installed"
 fi
