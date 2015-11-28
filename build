@@ -76,7 +76,7 @@ buildROM() {
 
 	cp "$KERNEL_DIST"/boot.img rom/install/boot.img
 
-	7za a -mx9 -xr@"$TOOLS"/exclusion.txt "$DIST"/"$FILE" "$ROM_DIR"/META-INF "$ROM_DIR"/install "$SYSTEM_DIR" "$KERNEL_DIST"/system
+	7za a -mx9 -xr@"$TOOLS"/exclusion.txt "$DIST"/"$FILE" "$ROM_DIR"/META-INF "$ROM_DIR"/install "$SYSTEM_DIR"
 
 	if [ -e "$OVERLAY_DIR" ];then
 		for d in "$OVERLAY_DIR"/* ;do
