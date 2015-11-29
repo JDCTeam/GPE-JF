@@ -25,20 +25,13 @@ file_getprop() { grep "^$2" "$1" | cut -d= -f2; }
 
 getprop() { test -e /sbin/getprop && /sbin/getprop $1 || file_getprop /default.prop $1; }
 
-is_substring() {
-  case "$2" in
-    *$1*) echo 1;;
-    *) echo 0;;
-  esac;
-}
-
 device_check() {
-    PROP=$(getprop "ro.product.device");
-    is_substring "$PROP" jflte
-    if [ "$?" -ne 1 ]; then
+    PROP=$(getprop "ro.product.device")
+    DEVICE=jflte
+    if [ "${PROP/$DEVICE}" = "$PROP" ] ; then
         ui_print "Incorrect device. Please make sure you are using a supported device"
         exit 1
-    fi;
+    fi
 }
 
 #### Assert check that we're running a valid device
@@ -69,7 +62,7 @@ device_check
 
     umount /data
 
-	show_progress 1.0 1498
+show_progress 1.0 1498
 
 ## Kernel
 
