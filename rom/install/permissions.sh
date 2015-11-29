@@ -1,9 +1,9 @@
 #!/sbin/ash
 
-OUTFD=/proc/self/fd/$1;
+OUTFD=/proc/self/fd/"$1";
 
 ui_print() {
-  echo "ui_print $1" > "$OUTFD";
+  echo "ui_print "$1"" > "$OUTFD";
   echo "ui_print" > "$OUTFD";
 }
 
@@ -14,46 +14,39 @@ set_perm() {
     chmod $3 $i;
   done;
 }
-
 set_perm_recursive() {
   dirs=$(echo $* | awk '{ print substr($0, index($0,$5)) }');
   for i in $dirs; do
-    chown -R $1.$2 $i; chown -R $1:$2 $i;
+    chown -Rh $1.$2 $i; chown -Rh $1:$2 $i;
     find "$i" -type d -exec chmod $3 {} +;
     find "$i" -type f -exec chmod $4 {} +;
   done;
 }
 
 ch_con() {
-  LD_LIBRARY_PATH=/system/lib /system/toolbox chcon u:object_r:$1:s0 $2;
-  LD_LIBRARY_PATH=/system/lib /system/bin/toolbox chcon u:object_r:$1:s0 $2;
   chcon u:object_r:$1:s0 $2;
 }
-
 ch_con_recursive() {
   dirs=$(echo $* | awk '{ print substr($0, index($0,$3)) }');
   for i in $dirs; do
-    find "$i" -type d -exec LD_LIBRARY_PATH=/system/lib /system/toolbox chcon u:object_r:$1:s0 {} +;
-    find "$i" -type d -exec LD_LIBRARY_PATH=/system/lib /system/bin/toolbox chcon u:object_r:$1:s0 {} +;
     find "$i" -type d -exec chcon u:object_r:$1:s0 '{}' +;
-    find "$i" -type f -exec LD_LIBRARY_PATH=/system/lib /system/toolbox chcon u:object_r:$2:s0 {} +;
-    find "$i" -type f -exec LD_LIBRARY_PATH=/system/lib /system/bin/toolbox chcon u:object_r:$2:s0 {} +;
     find "$i" -type f -exec chcon u:object_r:$2:s0 '{}' +;
   done;
 }
 
 set_metadata() {
-    set_perm $1 $2 $3 $5
-    ch_con $4 $5
+    set_perm "$1" "$2" "$3" "$5"
+    ch_con "$4" "$5";
 }
 
 set_metadata_recursive() {
-    set_perm_recursive $1 $2 $3 $4 $6
-    ch_con_recursive $5 $5 $6
+    set_perm_recursive "$1" "$2" "$3" "$4" "$6"
+    ch_con_recursive "$5" "$5" "$6";
 }
 
 ui_print "Setting Permissions..."
-
+    set_metadata_recursive 0 0 0755 0644 system_file /system
+    set_metadata_recursive 0 2000 0755 0755 system_file /system/bin
     set_metadata 0 2000 0755 atfwd_exec /system/bin/ATFWD-daemon
     set_metadata 0 2000 0755 diag_exec /system/bin/PktRspTest
     set_metadata 0 2000 0755 zygote_exec /system/bin/app_process32
@@ -94,7 +87,6 @@ ui_print "Setting Permissions..."
     set_metadata 0 2000 0755 system_file /system/bin/logwrapper
     set_metadata 0 2000 0755 macloader_exec /system/bin/macloader
     set_metadata 0 2000 0755 system_file /system/bin/mdm_helper
-    set_metadata 0 2000 0755 mdm_helper_exec /system/bin/mdm_helper_proxy
     set_metadata 0 2000 0755 mdnsd_exec /system/bin/mdnsd
     set_metadata 0 2000 0755 mediaserver_exec /system/bin/mediaserver
     set_metadata 0 2000 0755 system_file /system/bin/mfgloader
@@ -143,36 +135,27 @@ ui_print "Setting Permissions..."
     set_metadata 0 0 0644 system_file /system/etc/bluetooth/auto_pair_devlist.conf
     set_metadata 0 0 0644 system_file /system/etc/bluetooth/bt_did.conf
     set_metadata 0 0 0644 system_file /system/etc/bluetooth/bt_stack.conf
+    set_metadata_recursive 0 0 0755 0644 dhcp_system_file /system/etc/dhcpcd
     set_metadata 0 2000 0755 system_file /system/etc/dhcpcd/dhcpcd-hooks
     set_metadata 1014 2000 0550 system_file /system/etc/dhcpcd/dhcpcd-run-hooks
     set_metadata 0 0 0644 system_file /system/etc/event-log-tags
+    set_metadata_recursive 0 2000 0755 0644 system_file /system/etc/firmware
+    set_metadata_recursive 0 0 0755 0644 system_file /system/etc/firmware/wlan
     set_metadata 0 2000 0755 system_file /system/etc/firmware/wlan/prima
     set_metadata 0 1000 0550 system_file /system/etc/init.qcom.sdio.sh
     set_metadata 0 2000 0755 system_file /system/etc/permissions
+    set_metadata_recursive 0 0 0755 0555 system_file /system/etc/ppp
     set_metadata 0 2000 0755 system_file /system/etc/security
     set_metadata 0 2000 0755 system_file /system/etc/security/cacerts
+    set_metadata_recursive 0 2000 0755 0644 system_file /system/vendor
     set_metadata 0 2000 0755 system_file /system/vendor/firmware
     set_metadata 0 2000 0755 system_file /system/vendor/lib
     set_metadata 0 2000 0755 system_file /system/vendor/lib/egl
     set_metadata 0 2000 0755 system_file /system/vendor/firmware
+    set_metadata_recursive 0 2000 0755 0644 system_file /system/vendor/lib/hw
     set_metadata 0 0 0644 system_file /system/vendor/lib/hw/power.qcom.so
+    set_metadata_recursive 0 2000 0755 0644 system_file /system/vendor/lib/mediadrm
     set_metadata 0 0 0644 system_file /system/vendor/lib/mediadrm/libdrmclearkeyplugin.so
     set_metadata 0 0 0644 system_file /system/vendor/lib/mediadrm/libwvdrmengine.so
     set_metadata 0 2000 0755 system_file /system/vendor/media
-    set_metadata 0 2000 0755 system_file /system/vendor/pittpatt
-    set_metadata 0 2000 0755 system_file /system/vendor/pittpatt/models
-    set_metadata 0 2000 0755 system_file /system/vendor/pittpatt/models/detection
-    set_metadata 0 2000 0755 system_file /system/vendor/pittpatt/models/detection/multi_pose_face_landmark_detectors.8
-    set_metadata 0 2000 0755 system_file /system/vendor/pittpatt/models/detection/yaw_roll_face_detectors.7.1
-    set_metadata 0 0 0644 system_file /system/vendor/pittpatt/models/recognition/face.face.y0-y0-71-N-tree_7-wmd.bin
-    set_metadata_recursive 0 0 0755 0644 system_file 
-    set_metadata_recursive 0 2000 0755 0755 system_file 
-    set_metadata_recursive 0 0 0755 0644 dhcp_system_file 
-    set_metadata_recursive 0 2000 0755 0644 system_file 
-    set_metadata_recursive 0 0 0755 0644 system_file 
-    set_metadata_recursive 0 0 0755 0555 system_file 
-    set_metadata_recursive 0 2000 0755 0644 system_file 
-    set_metadata_recursive 0 2000 0755 0644 system_file 
-    set_metadata_recursive 0 2000 0755 0644 system_file 
-    set_metadata_recursive 0 2000 0755 0644 system_file 
-    set_metadata_recursive 0 2000 0755 0755 system_file 
+    set_metadata_recursive 0 2000 0755 0755 system_file /system/xbin

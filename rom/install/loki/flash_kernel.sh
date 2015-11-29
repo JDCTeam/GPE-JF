@@ -8,7 +8,7 @@
 # Run loki patch on boot.img for locked bootloaders, found in loki_bootloaders
 #
 
-export C=/tmp/install/loki_tmpdir
+export C=/tmp/install/loki/loki_tmpdir
 
 OUTFD=/proc/self/fd/$1;
 
@@ -17,7 +17,7 @@ ui_print() {
   echo "ui_print" > "$OUTFD";
 }
 
-egrep -q -f /tmp/install/loki_bootloaders /proc/cmdline
+egrep -q -f /tmp/install/loki/loki_bootloaders /proc/cmdline
 if [ $? -eq 0 ];then
   ui_print "-- Loki detected for patch and flash"
   mkdir -p $C

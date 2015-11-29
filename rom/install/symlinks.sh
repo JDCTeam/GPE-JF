@@ -8,8 +8,7 @@ ui_print() {
 }
 
 symlink() {
-  links=$(echo $* | awk '{ print substr($0, index($0,$2)) }');
-  ln -s $1 $links;
+  ln -fs $1 $2;
 }
 
 ui_print "Symlinking...";
@@ -226,7 +225,8 @@ ui_print "Symlinking...";
     symlink /system/lib/libdefcontainer_jni.so /system/priv-app/DefaultContainerService/lib/arm/libdefcontainer_jni.so
     symlink /system/lib/libjni_pacprocessor.so /system/app/PacProcessor/lib/arm/libjni_pacprocessor.so
     symlink /system/lib/libnfc_nci_jni.so /system/app/NfcNci/lib/arm/libnfc_nci_jni.so
-    symlink /system/lib/libprintspooler_jni.so /system/app/PrintSpooler/lib/arm/libprintspooler_jni.so  
+    symlink /system/lib/libprintspooler_jni.so /system/app/PrintSpooler/lib/arm/libprintspooler_jni.so
+    mkdir -p /system/priv-app/OTAUpdates/lib/arm  
     symlink /system/lib/libbypass.so /system/priv-app/OTAUpdates/lib/arm/libbypass.so
     symlink /system/lib/libDivxDrm.so /system/lib/libdivxdrm.so
     symlink toolbox /system/bin/cat
