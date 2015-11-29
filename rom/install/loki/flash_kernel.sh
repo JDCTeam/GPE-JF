@@ -10,7 +10,7 @@
 
 export C=/tmp/install/loki_tmpdir
 
-OUTFD=/proc/self/fd/1;
+OUTFD=/proc/self/fd/$1;
 
 ui_print() {
   echo "ui_print $1" > "$OUTFD";
@@ -19,7 +19,7 @@ ui_print() {
 
 egrep -q -f /tmp/install/loki_bootloaders /proc/cmdline
 if [ $? -eq 0 ];then
-  ui_print "Loki detected for patch and flash"
+  ui_print "-- Loki detected for patch and flash"
   mkdir -p $C
   dd if=/dev/block/platform/msm_sdcc.1/by-name/aboot of=$C/aboot.img
   /tmp/install/loki_patch boot $C/aboot.img /tmp/install/boot.img $C/boot.lok || exit 1
@@ -29,7 +29,7 @@ if [ $? -eq 0 ];then
 fi
 
 
-ui_print "Unlocked bootloader version detected."
-ui_print "Flashing normally."
+ui_print "-- Unlocked bootloader version detected."
+ui_print "--- Flashing normally."
 dd if=/tmp/install/boot.img of=/dev/block/platform/msm_sdcc.1/by-name/boot || exit 1
 exit 0

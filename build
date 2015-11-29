@@ -29,6 +29,7 @@ FRAMEWORK_DIR="$SYSTEM_DIR"/framework
 OVERLAY_DIR="$ROM_DIR"/overlay
 OVERLAY_SYSTEM="$ROM_DIR"/overlay/system/system
 OVERLAY_GAPPS="$ROM_DIR"/overlay/gapps
+OPENGAPPS_INSTALL="$BUILD_DIR"/rom/install/opengapps
 
 # KERNEL
 KERNEL="$BUILD_DIR"/kernel
@@ -67,7 +68,7 @@ buildROM() {
 
 	FILE_COUNT=$(expr "$ROM_SYSTEM_COUNT" + "$ROM_OVERLAY_COUNT")
 
-	sed -i "s/.*show_progress.*/	show_progress(1.0, $FILE_COUNT);/g" "$ROM_DIR"/META-INF/com/google/android/updater-script
+	sed -i "s/.*show_progress.*/	show_progress 1.0 $FILE_COUNT/g" "$ROM_DIR"/META-INF/com/google/android/update-binary
 
 	sed -i "s/.*ro.build.version.incremental.*/ro.build.version.incremental=$VERSION/g" "$OVERLAY_SYSTEM"/build.prop
 	sed -i "s/.*ro.ota.version.*/ro.ota.version=$VERSION/g" "$OVERLAY_SYSTEM"/build.prop
@@ -155,7 +156,7 @@ buildKernel() {
 
 	if [ ! -e "$KERNEL"/arch/arm/boot/zImage ];then
 		echo "Kernel failed to build"
-		exit 0
+		exit 1
 	fi
 
 	cd "$BUILD_DIR"
@@ -166,7 +167,6 @@ buildGapps() {
 	OPENGAPPS_VARIANT=super
 	OPENGAPPS_API=22
 	OPENGAPPS_ZIP=open_gapps-"$OPENGAPPS_ARCH"-"$API_NUM"-"$OPENGAPPS_VARIANT"-"$VERSION".zip
-	OPENGAPPS_INSTALL="$BUILD_DIR"/rom/install/opengapps
 	OPENGAPPS_OUT="$BUILD_DIR"/opengapps/out
 
 	if [ ! -e "$OPENGAPPS_OUT"/"$OPENGAPPS_ZIP" ];then
@@ -180,8 +180,7 @@ buildGapps() {
 		echo "Copying Gapps to Install folder"
 		cp "$OPENGAPPS_OUT"/"$OPENGAPPS_ZIP" "$OPENGAPPS_INSTALL"/opengapps.zip
 	else
-		echo "Error, GAPPS not present. Exiting"
-		exit 255
+		echo "Error, GAPPS not present"
 	fi
 }
 
@@ -195,12 +194,12 @@ start() {
 	echo "Select to either BUILD the ROM, or just the modified apps/jars"
 	select CHOICE in "Build ROM, GApps, Kernel and Files" "Build ROM" "Build Kernel" "Build Modded Files" "Build Addons" "Build GApps" "Check for Updates" "Exit"; do
 	    case "$CHOICE" in
-	        "Build ROM, GApps, Kernel and Files" ) buildKernel; buildApps; buildGapps; buildROM; start; break;;
-	        "Build ROM" ) buildROM; start; break;;
-			"Build Kernel" ) buildKernel; start; break;;
-			"Build Modded Files" ) buildApps; start; break;;
-			"Build Addons" ) buildAddons; start; break;;
-			"Build GApps" ) buildGapps; start; break;;
+	        "Build ROM, GApps, Kernel and Files" ) checkForUpdates; buildKernel; buildApps; buildGapps; buildROM; start; break;;
+	        "Build ROM" ) checkForUpdates; buildROM; start; break;;
+			"Build Kernel" ) checkForUpdates; buildKernel; start; break;;
+			"Build Modded Files" ) checkForUpdates ;buildApps; start; break;;
+			"Build Addons" ) checkForUpdates; buildAddons; start; break;;
+			"Build GApps" ) checkForUpdates; buildGapps; start; break;;
 			"Check for Updates" ) checkForUpdates; start; break;;
 			"Exit" ) exit 0; break;;
 	    esac
