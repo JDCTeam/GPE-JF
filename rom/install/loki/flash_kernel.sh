@@ -28,7 +28,6 @@ if [ $? -eq 0 ];then
   exit 0
 fi
 
-
 ui_print "-- Unlocked bootloader version detected."
 ui_print "--- Flashing normally."
 dd if=/tmp/install/boot.img of=/dev/block/platform/msm_sdcc.1/by-name/boot || exit 1

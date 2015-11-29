@@ -68,7 +68,7 @@ buildROM() {
 
 	FILE_COUNT=$(expr "$ROM_SYSTEM_COUNT" + "$ROM_OVERLAY_COUNT")
 
-	sed -i "s/.*show_progress.*/	show_progress 1.0 $FILE_COUNT/g" "$ROM_DIR"/META-INF/com/google/android/update-binary
+	sed -i "s/.*show_progress 1.0.*/show_progress 1.0 $FILE_COUNT/g" "$ROM_DIR"/META-INF/com/google/android/update-binary
 
 	sed -i "s/.*ro.build.version.incremental.*/ro.build.version.incremental=$VERSION/g" "$OVERLAY_SYSTEM"/build.prop
 	sed -i "s/.*ro.ota.version.*/ro.ota.version=$VERSION/g" "$OVERLAY_SYSTEM"/build.prop

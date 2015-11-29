@@ -14,13 +14,6 @@ show_progress() { echo "progress $1 $2" > $OUTFD; }
 
 unmount() { umount $1; }
 
-is_mounted() { 
-  case `mount` in
-      *$1*) echo 1;;
-      *) echo 0;;
-  esac;
-}
-
 package_extract_file() { unzip -o "$ZIP" "$1" -p > "$2"; }
 package_extract_dir() { unzip -o "$ZIP" "$1/*" -d "$2"; }
 
@@ -32,15 +25,25 @@ file_getprop() { grep "^$2" "$1" | cut -d= -f2; }
 
 getprop() { test -e /sbin/getprop && /sbin/getprop $1 || file_getprop /default.prop $1; }
 
-abort() { ui_print "$*"; exit 1; }
+is_substring() {
+  case "$2" in
+    *$1*) echo 1;;
+    *) echo 0;;
+  esac;
+}
+
+device_check() {
+    PROP=$(getprop "ro.product.device");
+    is_substring "$PROP" jflte
+    if [ "$?" -ne 1 ]; then
+        ui_print "Incorrect device. Please make sure you are using a supported device"
+        exit 1
+    fi;
+}
 
 #### Assert check that we're running a valid device
 
-prop=$(getprop ro.product.device);
-
-if [ getprop "ro.product.device" -ne "jflte" -o getprop "ro.product.device" -ne "jfltexx" -o getprop "ro.product.device" -ne "i9505" -o getprop "ro.product.device" -ne "GT-I9505" -o getprop "ro.product.device" -ne "jgedlte" -o getprop "ro.product.device" -ne "i9505g" -o getprop "ro.product.device" -ne "jfltevzw" -o getprop "ro.product.device" -ne "jfltespr" -o getprop "ro.product.device" -ne "jflterefreshspr" -o getprop "ro.product.device" -ne "jfltetmo" -o getprop "ro.product.device" -ne "jfltetmo" -o getprop "ro.product.device" -ne "jfltecri" -o getprop "ro.product.device" -ne "jfltecsp" -o getprop "ro.product.device" -ne "jflteatt" -o getprop "ro.product.device" -ne "jfltecan" -o getprop "ro.product.device" -ne "jflteusc" -o getprop "ro.product.device" -ne "jfltezm" ]; then
-    abort "Incorrect device. Please make sure you are using a supported device"
-fi
+device_check
 
 #### Begin
 
@@ -67,6 +70,22 @@ fi
     umount /data
 
 	show_progress 1.0 1498
+
+## Kernel
+
+ui_print "Installing GPE-JF Kernel..."    
+    set_perm 0 0 0777 /tmp/install/loki/loki_bootloaders
+    set_perm 0 0 0777 /tmp/install/loki/flash_kernel.sh
+    set_perm 0 0 0777 /tmp/install/loki/loki_patch
+    set_perm 0 0 0777 /tmp/install/loki/loki_flash
+    sh /tmp/install/loki/flash_kernel.sh $2
+
+    if [ "$?" -ne 0 ];then
+        ui_print "ERROR: Kernel flash failure." 
+        ui_print "Device will not boot. Please reinstall or redownload the ROM zip."
+        ui_print "You may use the provided MD5 file to check the integrity of the downloaded file"
+        exit 1
+    fi
 
 #### Install System
     
@@ -96,30 +115,16 @@ ui_print "Installing BusyBox..."
     set_perm 0 0 0777 /tmp/install/install-supersu.sh
     sh /tmp/install/install-supersu.sh $2
 
-## Kernel
-
-ui_print "Installing GPE-JF Kernel..."    
-    set_perm 0 0 0777 /tmp/install/loki/loki_bootloaders
-    set_perm 0 0 0777 /tmp/install/loki/flash_kernel.sh
-    set_perm 0 0 0777 /tmp/install/loki/loki_patch
-    set_perm 0 0 0777 /tmp/install/loki/loki_flash
-    sh /tmp/install/loki/flash_kernel.sh $2
-
-    if [ "$?" -ne 0 ];then
-        ui_print "ERROR: Kernel flash failure. Device will not boot. Please reinstall or redownload the ROM zip."
-        ui_print "You may use the provided MD5 file to check the integrity of the downloaded file"
-    fi
-
 ## Finishing
 
 ui_print "Finishing Installation..."
       
-    if [ getprop "ro.product.device" -eq "jfltevzw" -o getprop "ro.build.product" -eq "jfltevzw" ];then
+    if [ "$PROP" -eq "jfltevzw" -o getprop "ro.build.product" -eq "jfltevzw" ];then
         set_perm 0 0 0777 /tmp/install/default_network.sh
         sh /tmp/install/default_network.sh
     fi
 
-    if [ getprop "ro.product.device" -eq "jfltespr" -o getprop "ro.build.product" -eq "jfltespr" ];then
+    if [ "$PROP" -eq "jfltespr" -o getprop "ro.build.product" -eq "jfltespr" ];then
         cp /tmp/install/eri.xml /data/eri.xml
         set_perm 0 0 0644 /data/eri.xml
     fi;
