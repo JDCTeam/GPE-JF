@@ -234,6 +234,7 @@ ro.com.android.dataroaming=false
 ro.com.android.dateformat=MM-dd-yyyy
 ro.carrier=unknown
 ro.com.widevine.cachesize=16777216
+ro.vendor.extension_library=libqti-perfd-client.so
 drm.service.enabled=true
 ro.hdcp2.rx=tz
 ro.secwvk=144
